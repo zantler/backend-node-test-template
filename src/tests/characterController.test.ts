@@ -57,6 +57,23 @@ describe("Character Controller", () => {
     });
   });
 
+  //Bonus Test
+  test("should return empty array if no characters found anywhere", async () => {
+    const mockName = "NonExistent";
+    req.query = { name: mockName };
+
+    (Character.findAll as jest.Mock)
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
+    (fetchCharacterByName as jest.Mock).mockResolvedValue([]);
+
+    await getCharacters(req as any, res as Response);
+
+    expect(fetchCharacterByName).toHaveBeenCalledWith(mockName);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([]);
+  });
+
   test("should return characters from database if available", async () => {
     const mockCharacters = [
       { id: 1, name: "Rick Sanchez", species: "Human", gender: "Male" },
